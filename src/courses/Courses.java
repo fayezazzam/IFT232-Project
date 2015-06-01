@@ -20,7 +20,6 @@ public Connection con;
         this.setTitle("LCU Courses");
         this.setLocationRelativeTo(this);
         tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
-        tblCourses.getColumnModel().getColumn(0).setMaxWidth(0);
         getConnection();
     }
     private void getConnection() {
@@ -84,10 +83,25 @@ public Connection con;
         jScrollPane1.setViewportView(tblCourses);
 
         btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnModify.setText("Modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,6 +137,58 @@ public Connection con;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        Course newStudent = new Course(this, true, con, 0);
+        newStudent.setVisible(true);
+        refreshTable();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = tblCourses.getSelectedRow();
+        if (selectedRow > -1) {
+            int stdid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
+            Course newStudent = new Course(this, true, con, stdid);
+            newStudent.setVisible(true);
+            refreshTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a record to modify",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_btnModifyActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = tblCourses.getSelectedRow();
+        if (selectedRow > -1) {
+            int courseid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
+            try {
+                Statement stmt = con.createStatement();
+                stmt.execute("Delete From tbl_courses Where course_id = " + courseid  );
+                refreshTable();
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a record to delete",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+    private void refreshTable() {
+        coursesPUEntityManager.getTransaction().begin();
+        java.util.Collection data = tblCoursesQuery.getResultList();
+        for (Object entity : data) {
+            coursesPUEntityManager.refresh(entity);
+        }
+        tblCoursesList.clear();
+        tblCoursesList.addAll(data);
+        coursesPUEntityManager.getTransaction().commit();
+        bindingGroup.unbind();
+        bindingGroup.bind();
+        tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+    }
     /**
      * @param args the command line arguments
      */

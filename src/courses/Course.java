@@ -16,9 +16,9 @@ public class Course extends javax.swing.JFrame {
     private  int courseid;
     
     public Course(java.awt.Frame parent, boolean modal, Connection con, int courseid) {
-       //s super();
+        
         initComponents();
-        this.setTitle("Student");
+        this.setTitle("Course");
         this.setLocationRelativeTo(this);
         this.con = con;
         this.courseid= courseid;
@@ -32,7 +32,7 @@ public class Course extends javax.swing.JFrame {
             Statement stmt = con.createStatement();
             ResultSet rs
                     = stmt.executeQuery("Select * "
-                            + "From tbl_courses Where courseid =" + courseid);
+                            + "From tbl_courses Where course_id =" + courseid);
             if (rs.next()) {  
                 txtCode.setText(rs.getString("course_code"));
                 txtName.setText(rs.getString("course_name"));
@@ -191,7 +191,7 @@ public class Course extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
         } else if (txtName.getText().equals("")) {
             JOptionPane.showMessageDialog(this,
-                    "Enter a Name", "Warning",
+                    "Enter a Course_Name", "Warning",
                     JOptionPane.WARNING_MESSAGE);
         } else {
             String Code = txtCode.getText();
@@ -201,35 +201,35 @@ public class Course extends javax.swing.JFrame {
                     = Integer.parseInt(
                             cbxNbofCredits.
                             getSelectedItem().toString());
-            int Type
-                    = Integer.parseInt(
-                            cbxType.
-                            getSelectedItem().toString());
-            int lab
-                    = Integer.parseInt(
-                            cbxLab.
-                            getSelectedItem().toString());
+            String Type
+                    = 
+                            (String) cbxType.
+                            getSelectedItem();
+            String Lab
+                    = 
+                            (String) cbxLab.
+                            getSelectedItem();
             try {
                 PreparedStatement pstmt;
                 if(courseid==0){
                        pstmt = con.prepareStatement("Insert Into "
                                 + "tbl_courses (course_code,"
                                 + "course_name, description, "
-                                + "type, number_of_credits, "
+                                + "nb_of_credits, type, "
                                 + "lab) "
                                 + "Values ( '" + Code + "', "
                                 + "'" + Name + "', '" + Description + "', "
-                                + Type + ", '" + nbofcredits + "', "
-                                + lab+"')");
+                                + nbofcredits + ", '" + Type + "', "
+                                + Lab  + "')");
                 }else{
                     pstmt = con.prepareStatement("Update tbl_courses "
-                            + "Set course_code = '" + Code + "', "
+                            + "Set course_id = '" + Code + "', "
                             + "course_name = '" + Name + "', "
                             + "description = '" + Description + "', "
-                            + "type= " + Type + ", "
-                            + "nb_of_credits = '" + nbofcredits + "', "
-                            + "lab = " + lab + "' "
-                            + "Where std_id = " + courseid);
+                            + "nb_of_credits = " + nbofcredits + ", "
+                            + "type = '" + Type + "', "
+                            + "lab = " + Lab + "'"
+                            + "Where course_id = " + courseid);
                 }
                 pstmt.execute();
                 this.dispose();
