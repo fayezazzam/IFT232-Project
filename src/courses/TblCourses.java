@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 @Table(name = "tbl_courses", catalog = "courses", schema = "")
 @NamedQueries({
     @NamedQuery(name = "TblCourses.findAll", query = "SELECT t FROM TblCourses t"),
+    @NamedQuery(name = "TblCourses.findByCourseId", query = "SELECT t FROM TblCourses t WHERE t.courseId = :courseId"),
     @NamedQuery(name = "TblCourses.findByCourseCode", query = "SELECT t FROM TblCourses t WHERE t.courseCode = :courseCode"),
     @NamedQuery(name = "TblCourses.findByCourseName", query = "SELECT t FROM TblCourses t WHERE t.courseName = :courseName"),
     @NamedQuery(name = "TblCourses.findByDescription", query = "SELECT t FROM TblCourses t WHERE t.description = :description"),
@@ -37,6 +38,9 @@ public class TblCourses implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @Column(name = "course_id")
+    private Integer courseId;
+    @Basic(optional = false)
     @Column(name = "course_code")
     private String courseCode;
     @Basic(optional = false)
@@ -44,12 +48,11 @@ public class TblCourses implements Serializable {
     private String courseName;
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
     @Column(name = "type")
     private String type;
     @Basic(optional = false)
     @Column(name = "nb_of_credits")
-    private String nbOfCredits;
+    private int nbOfCredits;
     @Basic(optional = false)
     @Column(name = "lab")
     private String lab;
@@ -57,16 +60,26 @@ public class TblCourses implements Serializable {
     public TblCourses() {
     }
 
-    public TblCourses(String courseCode) {
-        this.courseCode = courseCode;
+    public TblCourses(Integer courseId) {
+        this.courseId = courseId;
     }
 
-    public TblCourses(String courseCode, String courseName, String type, String nbOfCredits, String lab) {
+    public TblCourses(Integer courseId, String courseCode, String courseName, int nbOfCredits, String lab) {
+        this.courseId = courseId;
         this.courseCode = courseCode;
         this.courseName = courseName;
-        this.type = type;
         this.nbOfCredits = nbOfCredits;
         this.lab = lab;
+    }
+
+    public Integer getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Integer courseId) {
+        Integer oldCourseId = this.courseId;
+        this.courseId = courseId;
+        changeSupport.firePropertyChange("courseId", oldCourseId, courseId);
     }
 
     public String getCourseCode() {
@@ -109,12 +122,12 @@ public class TblCourses implements Serializable {
         changeSupport.firePropertyChange("type", oldType, type);
     }
 
-    public String getNbOfCredits() {
+    public int getNbOfCredits() {
         return nbOfCredits;
     }
 
-    public void setNbOfCredits(String nbOfCredits) {
-        String oldNbOfCredits = this.nbOfCredits;
+    public void setNbOfCredits(int nbOfCredits) {
+        int oldNbOfCredits = this.nbOfCredits;
         this.nbOfCredits = nbOfCredits;
         changeSupport.firePropertyChange("nbOfCredits", oldNbOfCredits, nbOfCredits);
     }
@@ -132,7 +145,7 @@ public class TblCourses implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (courseCode != null ? courseCode.hashCode() : 0);
+        hash += (courseId != null ? courseId.hashCode() : 0);
         return hash;
     }
 
@@ -143,7 +156,7 @@ public class TblCourses implements Serializable {
             return false;
         }
         TblCourses other = (TblCourses) object;
-        if ((this.courseCode == null && other.courseCode != null) || (this.courseCode != null && !this.courseCode.equals(other.courseCode))) {
+        if ((this.courseId == null && other.courseId != null) || (this.courseId != null && !this.courseId.equals(other.courseId))) {
             return false;
         }
         return true;
@@ -151,7 +164,7 @@ public class TblCourses implements Serializable {
 
     @Override
     public String toString() {
-        return "courses.TblCourses[ courseCode=" + courseCode + " ]";
+        return "courses.TblCourses[ courseId=" + courseId + " ]";
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

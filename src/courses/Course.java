@@ -5,18 +5,48 @@
  */
 package courses;
 
-/**
- *
- * @author Fayez
- */
-public class Course extends javax.swing.JFrame {
+import javax.swing.JOptionPane;
+import java.sql.*;
 
-    /**
-     * Creates new form Course
-     */
-    public Course() {
+
+
+
+public class Course extends javax.swing.JFrame {
+    private Connection con;
+    private  int courseid;
+    
+    public Course(java.awt.Frame parent, boolean modal, Connection con, int courseid) {
+       //s super();
         initComponents();
+        this.setTitle("Student");
+        this.setLocationRelativeTo(this);
+        this.con = con;
+        this.courseid= courseid;
+        populate();
+    
     }
+
+  
+    private void populate() {
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs
+                    = stmt.executeQuery("Select * "
+                            + "From tbl_courses Where courseid =" + courseid);
+            if (rs.next()) {  
+                txtCode.setText(rs.getString("course_code"));
+                txtName.setText(rs.getString("course_name"));
+                cbxType.setSelectedItem(rs.getString("type"));
+                cbxNbofCredits.setSelectedItem(rs.getString("nb_of_credits"));
+                cbxLab.setSelectedItem(rs.getString("lab"));
+                txtDescription.setText(rs.getString("description"));
+            }
+        }
+            catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+                }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,25 +59,26 @@ public class Course extends javax.swing.JFrame {
 
         lblCode = new javax.swing.JLabel();
         txtCode = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
         lblName = new javax.swing.JLabel();
         lblDescription = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtDescription = new javax.swing.JTextArea();
         lblType = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        cbxType = new javax.swing.JComboBox();
         lblNbofCredits = new javax.swing.JLabel();
         lblLab = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
-        jComboBox3 = new javax.swing.JComboBox();
+        cbxNbofCredits = new javax.swing.JComboBox();
+        cbxLab = new javax.swing.JComboBox();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblCode.setText("Code");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtNameActionPerformed(evt);
             }
         });
 
@@ -55,54 +86,66 @@ public class Course extends javax.swing.JFrame {
 
         lblDescription.setText("Description");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtDescription.setColumns(20);
+        txtDescription.setRows(5);
+        jScrollPane1.setViewportView(txtDescription);
 
         lblType.setText("Type");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Major", "Elective" }));
 
         lblNbofCredits.setText("Nb of Credits");
 
         lblLab.setText("Lab");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxNbofCredits.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxLab.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblLab)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblNbofCredits)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblType)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblDescription)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblCode, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblName)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblDescription)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblCode, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblName)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblType)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(cbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lblNbofCredits)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lblLab)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cbxLab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSave)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -115,7 +158,7 @@ public class Course extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblName)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblDescription)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -123,24 +166,78 @@ public class Course extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblType)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblNbofCredits)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblLab)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbxLab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(btnSave)
+                .addGap(28, 28, 28))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        if (txtCode.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Enter a Course_Code", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        } else if (txtName.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Enter a Name", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        } else {
+            String Code = txtCode.getText();
+            String Name = txtName.getText();
+            String Description = txtDescription.getText();
+            int nbofcredits
+                    = Integer.parseInt(
+                            cbxNbofCredits.
+                            getSelectedItem().toString());
+            int Type
+                    = Integer.parseInt(
+                            cbxType.
+                            getSelectedItem().toString());
+            int lab
+                    = Integer.parseInt(
+                            cbxLab.
+                            getSelectedItem().toString());
+            try {
+                PreparedStatement pstmt;
+                if(courseid==0){
+                       pstmt = con.prepareStatement("Insert Into "
+                                + "tbl_courses (course_code,"
+                                + "course_name, description, "
+                                + "type, number_of_credits, "
+                                + "lab) "
+                                + "Values ( '" + Code + "', "
+                                + "'" + Name + "', '" + Description + "', "
+                                + Type + ", '" + nbofcredits + "', "
+                                + lab+"')");
+                }else{
+                    pstmt = con.prepareStatement("Update tbl_courses "
+                            + "Set course_code = '" + Code + "', "
+                            + "course_name = '" + Name + "', "
+                            + "description = '" + Description + "', "
+                            + "type= " + Type + ", "
+                            + "nb_of_credits = '" + nbofcredits + "', "
+                            + "lab = " + lab + "' "
+                            + "Where std_id = " + courseid);
+                }
+                pstmt.execute();
+                this.dispose();
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -172,18 +269,24 @@ public class Course extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Course().setVisible(true);
+                Course dialog = new Course(new javax.swing.JFrame(), true, null, 0);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox cbxLab;
+    private javax.swing.JComboBox cbxNbofCredits;
+    private javax.swing.JComboBox cbxType;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblCode;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblLab;
@@ -191,5 +294,7 @@ public class Course extends javax.swing.JFrame {
     private javax.swing.JLabel lblNbofCredits;
     private javax.swing.JLabel lblType;
     private javax.swing.JTextField txtCode;
+    private javax.swing.JTextArea txtDescription;
+    private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }
