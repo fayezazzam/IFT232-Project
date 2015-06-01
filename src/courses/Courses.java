@@ -4,18 +4,35 @@
  * and open the template in the editor.
  */
 package courses;
-
+    import java.sql.*;
+    import javax.swing.JOptionPane;
 /**
  *
  * @author Fayez
  */
 public class Courses extends javax.swing.JFrame {
-
+    public Connection con;
     /**
      * Creates new form Courses
      */
     public Courses() {
         initComponents();
+        this.setTitle("LCU Courses");
+        this.setLocationRelativeTo(this);
+        tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+        getConnection();
+    }
+    private void getConnection() {
+        try {
+            String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+            String DB_URL = "jdbc:mysql://localhost:3306/courses";
+            String USERNAME = "root";
+            String PASSWORD = "toor";
+            Class.forName(JDBC_DRIVER);
+            con = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
@@ -32,11 +49,11 @@ public class Courses extends javax.swing.JFrame {
         tblCoursesQuery = java.beans.Beans.isDesignTime() ? null : coursesPUEntityManager.createQuery("SELECT t FROM TblCourses t");
         tblCoursesList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : tblCoursesQuery.getResultList();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbCourses = new javax.swing.JTable();
+        tblCourses = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblCoursesList, tbCourses);
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblCoursesList, tblCourses);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${courseCode}"));
         columnBinding.setColumnName("Course Code");
         columnBinding.setColumnClass(String.class);
@@ -57,7 +74,7 @@ public class Courses extends javax.swing.JFrame {
         columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jScrollPane1.setViewportView(tbCourses);
+        jScrollPane1.setViewportView(tblCourses);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,7 +136,7 @@ public class Courses extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.persistence.EntityManager coursesPUEntityManager;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tbCourses;
+    private javax.swing.JTable tblCourses;
     private java.util.List<courses.TblCourses> tblCoursesList;
     private javax.persistence.Query tblCoursesQuery;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
