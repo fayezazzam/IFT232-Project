@@ -8,37 +8,50 @@ package courses;
 import javax.swing.JOptionPane;
 import java.sql.*;
 
-
-
-
-public class Course extends javax.swing.JFrame {
+/**
+ *
+ * @author Fayez
+ */
+public class Course extends javax.swing.JDialog {
     private Connection con;
     private  int courseid;
-    
+    /**
+     * Creates new form Course
+     */
     public Course(java.awt.Frame parent, boolean modal, Connection con, int courseid) {
-        
+        super(parent, modal);
         initComponents();
         this.setTitle("Course");
         this.setLocationRelativeTo(this);
         this.con = con;
         this.courseid= courseid;
+        cbxNbofCredits.setSelectedItem("3");
+        rbMajor.setSelected(true);
+        chkLab.setSelected(false);
         populate();
-    
     }
-
-  
+    
+     
     private void populate() {
         try {
             Statement stmt = con.createStatement();
             ResultSet rs
                     = stmt.executeQuery("Select * "
-                            + "From tbl_courses Where course_id =" + courseid);
+                            + "From tbl_courses Where course_id = " + courseid);
             if (rs.next()) {  
                 txtCode.setText(rs.getString("course_code"));
                 txtName.setText(rs.getString("course_name"));
-                cbxType.setSelectedItem(rs.getString("type"));
+                if(rs.getString("type").equals("Major")){
+                    rbMajor.setSelected(true);
+                }else{
+                    rbElective.setSelected(false);
+                }
+                if(rs.getString("lab").equals("Yes")){
+                    chkLab.setSelected(true);
+                }else{
+                    chkLab.setSelected(false);
+                }
                 cbxNbofCredits.setSelectedItem(rs.getString("nb_of_credits"));
-                cbxLab.setSelectedItem(rs.getString("lab"));
                 txtDescription.setText(rs.getString("description"));
             }
         }
@@ -57,32 +70,28 @@ public class Course extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         lblCode = new javax.swing.JLabel();
-        txtCode = new javax.swing.JTextField();
-        txtName = new javax.swing.JTextField();
         lblName = new javax.swing.JLabel();
         lblDescription = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JTextArea();
-        lblType = new javax.swing.JLabel();
-        cbxType = new javax.swing.JComboBox();
-        lblNbofCredits = new javax.swing.JLabel();
-        lblLab = new javax.swing.JLabel();
+        txtCode = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
+        lblNofCredits = new javax.swing.JLabel();
         cbxNbofCredits = new javax.swing.JComboBox();
-        cbxLab = new javax.swing.JComboBox();
+        lblType = new javax.swing.JLabel();
+        lblLab = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
+        rbMajor = new javax.swing.JRadioButton();
+        rbElective = new javax.swing.JRadioButton();
+        chkLab = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        lblCode.setText("Code");
+        lblCode.setText("Course Code");
 
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
-
-        lblName.setText("Name");
+        lblName.setText("Course Name");
 
         lblDescription.setText("Description");
 
@@ -90,17 +99,24 @@ public class Course extends javax.swing.JFrame {
         txtDescription.setRows(5);
         jScrollPane1.setViewportView(txtDescription);
 
-        lblType.setText("Type");
+        txtCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodeActionPerformed(evt);
+            }
+        });
 
-        cbxType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Major", "Elective" }));
-
-        lblNbofCredits.setText("Nb of Credits");
-
-        lblLab.setText("Lab");
+        lblNofCredits.setText("Nb of Credits");
 
         cbxNbofCredits.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
+        cbxNbofCredits.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxNbofCreditsActionPerformed(evt);
+            }
+        });
 
-        cbxLab.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+        lblType.setText("Type");
+
+        lblLab.setText("Lab");
 
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -109,83 +125,90 @@ public class Course extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup1.add(rbMajor);
+        rbMajor.setText("Major");
+
+        buttonGroup1.add(rbElective);
+        rbElective.setText("Elective");
+
+        chkLab.setText("Lab");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblLab)
+                        .addGap(18, 18, 18)
+                        .addComponent(chkLab)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSave))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblDescription)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblCode, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblName)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblType)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lblNbofCredits)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lblLab)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cbxLab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSave)))
+                                    .addComponent(lblCode)
+                                    .addComponent(lblName)
+                                    .addComponent(lblDescription))
+                                .addGap(27, 27, 27)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtCode, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                    .addComponent(txtName)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblNofCredits)
+                                .addGap(26, 26, 26)
+                                .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblType)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(rbMajor)
+                                .addGap(12, 12, 12)
+                                .addComponent(rbElective)))
+                        .addGap(0, 198, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCode)
                     .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblName)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(lblDescription)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNofCredits)
+                    .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblType)
-                    .addComponent(cbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNbofCredits)
-                    .addComponent(cbxNbofCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbMajor)
+                    .addComponent(rbElective))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
                     .addComponent(lblLab)
-                    .addComponent(cbxLab, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(28, 28, 28))
+                    .addComponent(chkLab))
+                .addGap(20, 20, 20))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
-
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        if (txtCode.getText().equals("")) {
+         if (txtCode.getText().equals("")) {
             JOptionPane.showMessageDialog(this,
                     "Enter a Course_Code", "Warning",
                     JOptionPane.WARNING_MESSAGE);
@@ -201,34 +224,39 @@ public class Course extends javax.swing.JFrame {
                     = Integer.parseInt(
                             cbxNbofCredits.
                             getSelectedItem().toString());
-            String Type
-                    = 
-                            (String) cbxType.
-                            getSelectedItem();
-            String Lab
-                    = 
-                            (String) cbxLab.
-                            getSelectedItem();
+            String Lab;
+            if (chkLab.isSelected()) {
+                Lab = "Yes";
+            } else {
+                Lab = "No";
+            }
+               
+            String Type;
+            if (rbMajor.isSelected()) {
+                Type = "Major";
+            } else {
+                Type = "Elective";
+            }
             try {
                 PreparedStatement pstmt;
                 if(courseid==0){
                        pstmt = con.prepareStatement("Insert Into "
                                 + "tbl_courses (course_code,"
-                                + "course_name, description, "
-                                + "nb_of_credits, type, "
-                                + "lab) "
-                                + "Values ( '" + Code + "', "
-                                + "'" + Name + "', '" + Description + "', "
-                                + nbofcredits + ", '" + Type + "', "
+                                + "course_name,description,"
+                                + "type, nb_of_credits,"
+                                + "lab)"
+                                + "Values ( '" + Code + "',"
+                                + "'" + Name + "' ,'" + Description +"','"
+                                + Type+ "',"+ nbofcredits + ", '" 
                                 + Lab  + "')");
                 }else{
                     pstmt = con.prepareStatement("Update tbl_courses "
-                            + "Set course_id = '" + Code + "', "
-                            + "course_name = '" + Name + "', "
-                            + "description = '" + Description + "', "
-                            + "nb_of_credits = " + nbofcredits + ", "
-                            + "type = '" + Type + "', "
-                            + "lab = " + Lab + "'"
+                            + "Set course_code = '" + Code + "',"
+                            + "course_name = '" + Name + "',"
+                            + "description = '" + Description + "',"
+                            + "type = '" + Type + "',"
+                            + "nb_of_credits = " + nbofcredits + ","
+                            + "lab = '" + Lab + "'"
                             + "Where course_id = " + courseid);
                 }
                 pstmt.execute();
@@ -238,6 +266,14 @@ public class Course extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void cbxNbofCreditsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxNbofCreditsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxNbofCreditsActionPerformed
+
+    private void txtCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -266,10 +302,10 @@ public class Course extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Course dialog = new Course(new javax.swing.JFrame(), true, null, 0);
+                Course dialog = new Course(new javax.swing.JFrame(), true,null,0);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -283,16 +319,18 @@ public class Course extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox cbxLab;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cbxNbofCredits;
-    private javax.swing.JComboBox cbxType;
+    private javax.swing.JCheckBox chkLab;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCode;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblLab;
     private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblNbofCredits;
+    private javax.swing.JLabel lblNofCredits;
     private javax.swing.JLabel lblType;
+    private javax.swing.JRadioButton rbElective;
+    private javax.swing.JRadioButton rbMajor;
     private javax.swing.JTextField txtCode;
     private javax.swing.JTextArea txtDescription;
     private javax.swing.JTextField txtName;
