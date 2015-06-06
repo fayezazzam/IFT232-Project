@@ -20,6 +20,7 @@ public Connection con;
         this.setTitle("LCU Courses");
         this.setLocationRelativeTo(this);
         tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+        tblCourses.getColumnModel().getColumn(0).setMaxWidth(0);
         getConnection();
     }
     private void getConnection() {
@@ -139,8 +140,8 @@ public Connection con;
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        Course newStudent = new Course(this, true, con, 0);
-        newStudent.setVisible(true);
+        Course newCourse = new Course(this, true, con, 0);
+        newCourse.setVisible(true);
         refreshTable();
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -148,9 +149,9 @@ public Connection con;
         // TODO add your handling code here:
         int selectedRow = tblCourses.getSelectedRow();
         if (selectedRow > -1) {
-            int stdid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
-            Course newStudent = new Course(this, true, con, stdid);
-            newStudent.setVisible(true);
+            int courseid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
+            Course newCourse = new Course(this, true, con, courseid);
+            newCourse.setVisible(true);
             refreshTable();
         } else {
             JOptionPane.showMessageDialog(this, "Select a record to modify",
@@ -188,6 +189,7 @@ public Connection con;
         bindingGroup.unbind();
         bindingGroup.bind();
         tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+        tblCourses.getColumnModel().getColumn(0).setMaxWidth(0);
     }
     /**
      * @param args the command line arguments
